@@ -1,0 +1,98 @@
+---
+title: "Assignment 1"
+author: "Vivekanand Kulkarni 19200231"
+date: "09/10/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Task 1 Manipulation
+Question 1
+Load the dataset EurostatCrime2017.csv. Notice that the first column of the csv
+contains the names of the countries that must be read as row names
+```{r Load the dataset EurostatCrime2017.csv, echo=TRUE}
+Eurocrimedata=read.csv("C:\\Users\\Vivek\\Downloads\\EurostatCrime2017.csv", header = TRUE, row.names = 1)
+Eurocrimedata
+```
+
+## Question 2
+The size (number of rows and columns) and the structure of this dataset.
+```{r, echo=TRUE}
+str(Eurocrimedata)
+nrow(Eurocrimedata)
+ncol(Eurocrimedata)
+```
+
+## Question 3
+Please consider NA values as 0 in this case.
+Add a new column called All Theft
+Remove the columns: Theft, Theft of a motorized land vehicle, Burglary, and
+Burglary of private residential premises.
+```{r, echo=TRUE}
+Eurocrimedata$Theft[is.na(Eurocrimedata$Theft)] <-0
+Eurocrimedata$Burglary[is.na(Eurocrimedata$Burglary)]<- 0
+Eurocrimedata$Burglary_of_private_residential_premises[(is.na(Eurocrimedata$Burglary_of_private_residential_premises))]<-0
+Eurocrimedata$Theft_of_a_motorized_land_vehicle[is.na(Eurocrimedata$Theft_of_a_motorized_land_vehicle)]<-0
+```
+
+```{r, echo=TRUE}
+Eurocrimedata$All_Theft<-(Eurocrimedata$Theft+Eurocrimedata$Theft_of_a_motorized_land_vehicle+Eurocrimedata$Burglary+Eurocrimedata$Burglary_of_private_residential_premises)
+Eurocrimedata$All_Theft
+str(Eurocrimedata)
+```
+
+```{r, echo=TRUE}
+NewEurocrimedata<-data.frame(Eurocrimedata)
+NewEurocrimedata <-subset(Eurocrimedata, select = -c(7,8,9,10))
+NewEurocrimedata
+```
+## Question 5 and 6
+Remove the countries with missing data from the data frame.
+Adding new data frame containing complete cases.
+```{r,echo=TRUE}
+newdf<-NewEurocrimedata[!complete.cases(NewEurocrimedata),]
+Countries<-row.names(newdf)
+Countries
+a<-NewEurocrimedata[complete.cases(NewEurocrimedata),]
+str(a)
+```
+## Task 2: Analysis
+The 3 most common crimes in Ireland in 2017 and the country which the highest overall record of offences
+```{r, echo=TRUE}
+Top<- sort(a['Ireland',],decreasing = TRUE)
+Top[1]
+Top[2]
+Top[3]
+```
+```{r, echo=TRUE}
+Highestoffense<-sort(apply(a,MARGIN=1,FUN= sum),decreasing = TRUE)
+Highestoffense[1]
+```
+## Task3 Creativity.
+All the crimes individually are plotted in form of barplot,boxplot and pair.
+In case of bar plot x- axis are the countries.
+In case of boxplot we can see that most of the graphs are negatively skewed.
+
+```{r, echo=TRUE}
+barplot(NewEurocrimedata$Sexual.violence)
+barplot(NewEurocrimedata$Intentional_homicide)
+barplot(NewEurocrimedata$Attempted_intentional_homicide)
+barplot(NewEurocrimedata$Assault)
+barplot(NewEurocrimedata$Kidnapping)
+barplot(NewEurocrimedata$Robbery)
+barplot(NewEurocrimedata$Unlawful_acts_involving_controlled_drugs_or_precursors)
+barplot(NewEurocrimedata$All_Theft)
+boxplot(NewEurocrimedata$Intentional_homicide)
+boxplot(NewEurocrimedata$Attempted_intentional_homicide)
+boxplot(NewEurocrimedata$Assault)
+boxplot(NewEurocrimedata$Kidnapping)
+boxplot(NewEurocrimedata$Robbery)
+boxplot(NewEurocrimedata$Unlawful_acts_involving_controlled_drugs_or_precursors)
+boxplot(NewEurocrimedata$All_Theft)
+pairs(NewEurocrimedata)
+```
